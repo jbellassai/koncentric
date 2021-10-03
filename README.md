@@ -1,1 +1,1 @@
-# koncentrik
+# koncentric
