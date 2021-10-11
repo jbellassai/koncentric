@@ -25,9 +25,14 @@ object Versions {
         const val dokkaVersion = "1.5.30"
     }
 
+    object Plugins {
+        const val jooqPluginVersion = "6.0.1"
+    }
+
     object Common {
         const val vavrVersion = "1.0.0-alpha-3"
         const val r2dbcPostgresqlVersion = "0.8.10.RELEASE"
+        const val jooqVersion = "3.15.3"
     }
 
     object Test {

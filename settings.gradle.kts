@@ -27,4 +27,5 @@ rootProject.name = "koncentric"
 include("koncentric-core")
 include("koncentric-persistence-in-memory")
 include("koncentric-persistence-r2dbc-postgres")
+include("koncentric-persistence-jooq")
 include("test-domains:users-and-groups")
