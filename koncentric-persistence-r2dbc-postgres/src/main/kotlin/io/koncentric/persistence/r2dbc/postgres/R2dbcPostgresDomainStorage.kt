@@ -18,17 +18,17 @@ package io.koncentric.persistence.r2dbc.postgres
 
 import io.koncentric.persistence.storage.IDomainStorage
 import io.koncentric.persistence.storage.ITransactionalDatabaseInterface
-import io.r2dbc.postgresql.PostgresqlConnectionFactory
 import io.r2dbc.postgresql.api.PostgresqlConnection
-import kotlinx.coroutines.reactor.awaitSingle
+import io.r2dbc.spi.ConnectionFactory
+import kotlinx.coroutines.reactive.awaitSingle
 
 data class R2DbcPostgresTransactionalDatabaseInterface(val connection: PostgresqlConnection): ITransactionalDatabaseInterface
 
 class R2dbcPostgresDomainStorage(
-    private val connectionFactory: PostgresqlConnectionFactory
+    private val connectionFactory: ConnectionFactory
     ) : IDomainStorage<R2DbcPostgresTransactionalDatabaseInterface> {
 
     override suspend fun getTransactionalDatabaseInterface(): R2DbcPostgresTransactionalDatabaseInterface =
-        R2DbcPostgresTransactionalDatabaseInterface(connectionFactory.create().awaitSingle())
+        R2DbcPostgresTransactionalDatabaseInterface(connectionFactory.create().awaitSingle() as PostgresqlConnection)
 
 }
