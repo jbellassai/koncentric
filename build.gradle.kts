@@ -16,11 +16,12 @@
 
 plugins {
     kotlin("jvm") version Versions.Kotlin.version apply false
+    id("org.jetbrains.dokka") version Versions.Kotlin.dokkaVersion apply false
 }
 
 allprojects {
     group = "io.github.jbellassai.koncentric"
-    version = "0.1-SNAPSHOT"
+    version = "0.1.0-SNAPSHOT"
 
     repositories {
         mavenCentral()

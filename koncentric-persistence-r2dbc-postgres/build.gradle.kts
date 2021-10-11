@@ -37,3 +37,5 @@ dependencies {
 
     testImplementation(project(":test-domains:users-and-groups"))
 }
+
+apply(from = "../publishing.gradle.kts")

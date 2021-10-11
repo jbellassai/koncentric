@@ -14,23 +14,10 @@
  * limitations under the License.
  */
 
-import Versions.Common
-import Versions.Kotlin
-import Versions.Test
+/**
+ * @author jbellassai
+ */
+object Ci {
 
-plugins {
-    kotlin("jvm")
+    const val isRelease = false
 }
-
-dependencies {
-
-    implementation(kotlin("stdlib", Kotlin.version))
-    implementation("org.jetbrains.kotlin", "kotlin-reflect", Kotlin.version)
-    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", Kotlin.coroutinesVersion)
-    implementation("io.vavr", "vavr", Common.vavrVersion)
-
-    testImplementation("io.kotest", "kotest-runner-junit5", Test.kotestRunnerVersion)
-    testImplementation("io.mockk", "mockk", Test.mockkVersion)
-}
-
-apply(from = "../publishing.gradle.kts")

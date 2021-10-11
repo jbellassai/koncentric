@@ -22,6 +22,7 @@ object Versions {
     object Kotlin {
         const val version = "1.5.31"
         const val coroutinesVersion = "1.5.2"
+        const val dokkaVersion = "1.5.30"
     }
 
     object Common {
