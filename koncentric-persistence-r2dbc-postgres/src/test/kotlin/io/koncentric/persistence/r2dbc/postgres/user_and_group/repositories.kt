@@ -21,14 +21,10 @@ import io.koncentric.persistence.r2dbc.postgres.R2DbcPostgresTransactionalDataba
 import io.koncentric.persistence.r2dbc.postgres.user_and_group.UserRepository.getMembersForGroup
 import io.koncentric.persistence.storage.ITransactionAware
 import io.koncentric.test_domains.users_and_groups.*
-import io.r2dbc.postgresql.codec.EnumCodec
 import io.r2dbc.spi.Row
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
-
-fun EnumCodec.Builder.registerEnums(): EnumCodec.Builder =
-    this.withEnum("user_status", EnabledStatus::class.java)
 
 private data class R2dbcDataMappingException(override val message: String) : RuntimeException(message)
 
@@ -158,6 +154,7 @@ object UserRepository :
     }
 
     override suspend fun deleteAll() {
+        @Suppress("SqlWithoutWhere")
         val statement = connection().createStatement(
             """
             DELETE FROM users
@@ -169,7 +166,8 @@ object UserRepository :
     }
 
     suspend fun addGroupMembership(user: IUser, group: IGroup) {
-        val statement = connection().createStatement("""
+        val statement = connection().createStatement(
+            """
             INSERT INTO groups_users (group_id, user_id, since) 
             VALUES (
                 (select id from groups where external_id = $1), 
@@ -177,7 +175,8 @@ object UserRepository :
                 transaction_timestamp()
             )
                 ON CONFLICT DO NOTHING
-        """.trimIndent())
+        """.trimIndent()
+        )
         val updated = statement
             .bind("$1", group.id.value)
             .bind("$2", user.id.value)
@@ -298,7 +297,7 @@ object GroupRepository :
     suspend fun updateName(id: GroupId, name: String) {
         val statement = connection().createStatement(
             """
-            UPDATE groups SET name = $1, WHERE external_id = $2
+            UPDATE groups SET name = $1 WHERE external_id = $2
         """.trimIndent()
         )
         statement
@@ -321,6 +320,7 @@ object GroupRepository :
     }
 
     override suspend fun deleteAll() {
+        @Suppress("SqlWithoutWhere")
         val statement = connection().createStatement(
             """
             DELETE FROM groups

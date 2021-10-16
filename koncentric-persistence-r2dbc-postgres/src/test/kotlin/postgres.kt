@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import io.koncentric.persistence.r2dbc.postgres.user_and_group.registerEnums
+import io.koncentric.test_domains.users_and_groups.EnabledStatus
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
@@ -55,6 +55,6 @@ fun connectionFactory(getPort: () -> Int) = PostgresqlConnectionFactory(
         .username("postgres")
         .password("postgres")
         .database("postgres")
-        .codecRegistrar(EnumCodec.builder().apply { registerEnums() }.build())
+        .codecRegistrar(EnumCodec.builder().withEnum("user_status", EnabledStatus::class.java).build())
         .build()
 )
