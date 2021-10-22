@@ -19,5 +19,5 @@
  */
 object Ci {
 
-    const val isRelease = true
+    const val isRelease = false
 }
