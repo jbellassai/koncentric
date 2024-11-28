@@ -33,4 +33,4 @@ dependencies {
     testImplementation("io.mockk", "mockk", Test.mockkVersion)
 }
 
-apply(from = "../publishing.gradle.kts")
+// apply(from = "../publishing.gradle.kts")
