@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import Versions.Common
 import Versions.Kotlin
 import Versions.Test
 
@@ -26,13 +25,13 @@ dependencies {
     implementation(kotlin("stdlib", Kotlin.version))
     implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", Kotlin.coroutinesVersion)
     implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-reactor", Kotlin.coroutinesVersion)
-    implementation("io.r2dbc", "r2dbc-postgresql", Common.r2dbcPostgresqlVersion)
+    implementation("org.postgresql", "r2dbc-postgresql", "1.0.7.RELEASE")
     implementation(project(":koncentric-core"))
 
     testImplementation("io.kotest", "kotest-runner-junit5", Test.kotestRunnerVersion)
     testImplementation("io.mockk", "mockk", Test.mockkVersion)
     testImplementation(enforcedPlatform("io.zonky.test.postgres:embedded-postgres-binaries-bom:${Test.embeddedPostgresVersion}"))
-    testImplementation("io.zonky.test", "embedded-postgres", Test.zonkyVersion)
+    testImplementation("com.opentable.components", "otj-pg-embedded", "1.1.0")
     testImplementation("org.slf4j", "slf4j-simple", Test.slf4jSimpleVersion)
 
     testImplementation(project(":test-domains:users-and-groups"))

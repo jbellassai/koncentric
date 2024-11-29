@@ -27,7 +27,7 @@ object Versions {
 
     object Common {
         const val vavrVersion = "1.0.0-alpha-3"
-        const val r2dbcPostgresqlVersion = "0.8.10.RELEASE"
+        const val r2dbcPostgresqlVersion = "1.0.7.RELEASE"
     }
 
     object Test {

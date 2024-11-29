@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
+import com.opentable.db.postgres.embedded.EmbeddedPostgres
+import com.opentable.db.postgres.embedded.FlywayPreparer
 import io.koncentric.persistence.r2dbc.postgres.user_and_group.registerEnums
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
 import io.r2dbc.postgresql.codec.EnumCodec
-import io.zonky.test.db.postgres.embedded.EmbeddedPostgres
-import io.zonky.test.db.postgres.embedded.FlywayPreparer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
