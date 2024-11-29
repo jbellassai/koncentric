@@ -21,7 +21,9 @@ import io.koncentric.persistence.event.IDomainPersistenceEvent
 import io.koncentric.persistence.tx.IReadOnlyTransaction
 import io.koncentric.persistence.tx.IReadWriteTransaction
 import io.koncentric.persistence.tx.ITransactionManager
-import io.r2dbc.spi.IsolationLevel
+import io.r2dbc.postgresql.api.PostgresTransactionDefinition
+import io.r2dbc.spi.IsolationLevel.SERIALIZABLE
+import io.r2dbc.spi.TransactionDefinition
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlin.reflect.KClass
 
@@ -69,13 +71,17 @@ class R2dbcPostgresTransactionManager(
     private val subscriptionManager: IDomainEventSubscriptionManager<R2DbcPostgresTransactionalDatabaseInterface>
 ) : ITransactionManager<R2DbcPostgresTransactionalDatabaseInterface>  {
 
+    private fun txDefinition(): TransactionDefinition =
+        PostgresTransactionDefinition.from(SERIALIZABLE)
+            .readOnly()
+            .notDeferrable()
+
     override suspend fun newReadOnlyTransaction(): IReadOnlyTransaction<R2DbcPostgresTransactionalDatabaseInterface> {
         val dbi = storage.getTransactionalDatabaseInterface()
         val connection = dbi.connection
         try {
-            connection.beginTransaction().awaitSingleOrNull()
-            connection.transactionIsolationLevel = IsolationLevel.REPEATABLE_READ
-            // TODO r2dbc 0.9 should allow us to set READ-ONLY
+
+            connection.beginTransaction(txDefinition()).awaitSingleOrNull()
             return R2dbcPostgresReadOnlyTransaction(dbi)
         } catch(t: Throwable) {
             connection.close().awaitSingleOrNull()
@@ -88,7 +94,7 @@ class R2dbcPostgresTransactionManager(
         val connection = dbi.connection
         try {
             connection.beginTransaction().awaitSingleOrNull()
-            connection.transactionIsolationLevel = IsolationLevel.SERIALIZABLE
+            connection.transactionIsolationLevel = SERIALIZABLE
             return R2dbcPostgresReadWriteTransaction(dbi, subscriptionManager)
         } catch(t: Throwable) {
             connection.close().awaitSingleOrNull()
