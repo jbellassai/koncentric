@@ -23,7 +23,6 @@ import io.koncentric.persistence.tx.IReadWriteTransaction
 import io.koncentric.persistence.tx.ITransactionManager
 import io.r2dbc.postgresql.api.PostgresTransactionDefinition
 import io.r2dbc.spi.IsolationLevel.SERIALIZABLE
-import io.r2dbc.spi.TransactionDefinition
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlin.reflect.KClass
 
@@ -71,17 +70,21 @@ class R2dbcPostgresTransactionManager(
     private val subscriptionManager: IDomainEventSubscriptionManager<R2DbcPostgresTransactionalDatabaseInterface>
 ) : ITransactionManager<R2DbcPostgresTransactionalDatabaseInterface>  {
 
-    private fun txDefinition(): TransactionDefinition =
-        PostgresTransactionDefinition.from(SERIALIZABLE)
-            .readOnly()
-            .notDeferrable()
+    private val readOnly = PostgresTransactionDefinition
+        .mutability(false)
+        .isolationLevel(SERIALIZABLE)
+        .notDeferrable()
+
+    private val readWrite = PostgresTransactionDefinition
+        .mutability(true)
+        .isolationLevel(SERIALIZABLE)
+        .notDeferrable()
 
     override suspend fun newReadOnlyTransaction(): IReadOnlyTransaction<R2DbcPostgresTransactionalDatabaseInterface> {
         val dbi = storage.getTransactionalDatabaseInterface()
         val connection = dbi.connection
         try {
-
-            connection.beginTransaction(txDefinition()).awaitSingleOrNull()
+            connection.beginTransaction(readOnly).awaitSingleOrNull()
             return R2dbcPostgresReadOnlyTransaction(dbi)
         } catch(t: Throwable) {
             connection.close().awaitSingleOrNull()
@@ -93,8 +96,7 @@ class R2dbcPostgresTransactionManager(
         val dbi = storage.getTransactionalDatabaseInterface()
         val connection = dbi.connection
         try {
-            connection.beginTransaction().awaitSingleOrNull()
-            connection.transactionIsolationLevel = SERIALIZABLE
+            connection.beginTransaction(readWrite).awaitSingleOrNull()
             return R2dbcPostgresReadWriteTransaction(dbi, subscriptionManager)
         } catch(t: Throwable) {
             connection.close().awaitSingleOrNull()
