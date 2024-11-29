@@ -24,7 +24,7 @@ import io.koncentric.persistence.storage.ITransactionalDatabaseInterface
 interface ITransactionManager<DB: ITransactionalDatabaseInterface> {
 
     /**
-     * Opens a new [IReadWriteTransaction]
+     * Opens a new [IReadOnlyTransaction]
      */
     suspend fun newReadOnlyTransaction(): IReadOnlyTransaction<DB>
 
